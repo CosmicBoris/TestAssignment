@@ -2,6 +2,33 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
 
+## Overview
+
+An Angular 19 application demonstrating reliable session presence tracking across multiple browser tabs and devices using Supabase Auth and Realtime.
+
+## Presence Strategy
+
+### Three-State Model (Active, Idle, Stale)
+
+Instead of binary online/offline, this app uses three states to prevent flickering and provide realistic presence:
+
+- **Active**: Tab visible + heartbeat within 15 seconds
+- **Idle**: Background tab or 15-60 seconds since last heartbeat
+- **Stale**: No heartbeat for 60+ seconds (closed/crashed)
+
+### Why This Approach?
+
+1. **Reliable**: No `beforeunload` events (unreliable in modern browsers). Presence determined purely by heartbeat timestamps.
+2. **Flicker-Free**: Time-based transitions with different intervals for active (5s) vs background tabs (30s).
+3. **Browser-Friendly**: Tolerates throttling, network delays, and mobile browser behavior.
+
+### Implementation
+
+- Device ID in `localStorage`, Tab ID in `sessionStorage`
+- Heartbeats update `lastSeen` timestamp and `isActive` flag
+- State recomputed every 2 seconds using Angular signals
+- Supabase Realtime for cross-tab/device synchronization
+
 ## Development server
 
 To start a local development server, run:
