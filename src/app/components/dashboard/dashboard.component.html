@@ -1,0 +1,84 @@
+<header class="app-header">
+  <div class="header-content">
+    <h1>Session Presence Tracker</h1>
+    <div class="user-info">
+      <span class="user-email">{{ userEmail() }}</span>
+      <button class="btn-signout" (click)="signOut()">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<main class="dashboard">
+    <div class="stats-grid">
+      <div class="stat-card active">
+        <div class="stat-value">{{ activeTabs().length }}</div>
+        <div class="stat-label">Active Tabs</div>
+        <div class="stat-description">Seen within 15 seconds</div>
+      </div>
+      
+      <div class="stat-card idle">
+        <div class="stat-value">{{ idleTabs().length }}</div>
+        <div class="stat-label">Idle Tabs</div>
+        <div class="stat-description">Seen within 60 seconds</div>
+      </div>
+      
+      <div class="stat-card stale">
+        <div class="stat-value">{{ staleTabs().length }}</div>
+        <div class="stat-label">Stale Tabs</div>
+        <div class="stat-description">Seen over 60 seconds ago</div>
+      </div>
+    </div>
+
+    <div class="devices-section">
+      <h2>Your Active Sessions</h2>
+      
+      @if (deviceGroups().length === 0) {
+        <div class="empty-state">
+          <p>Loading sessions...</p>
+        </div>
+      }
+
+      @for (device of deviceGroups(); track device.deviceId) {
+      <div class="device-card">
+        <h3 class="device-title">
+          {{ getDeviceLabel(device.deviceId, $index) }}
+        </h3>
+        
+        <div class="tabs-list">
+          @for (tabState of device.tabs; track tabState.tab.tabId) {
+            <div class="tab-item" [class.current-tab]="tabState.isCurrentTab">
+              <div class="tab-header">
+                <div class="tab-info">
+                  <span class="tab-browser">
+                    {{ formatUserAgent(tabState.tab.userAgent) }}
+                  </span>
+                  @if (tabState.isCurrentTab) {
+                    <span class="current-badge">Current Tab</span>
+                  }
+                </div>
+                <span class="tab-state" [ngClass]="getStateClass(tabState.state)">
+                  {{ getStateLabel(tabState.state) }}
+                </span>
+              </div>
+              
+                <div class="tab-details">
+                  <div class="detail-row">
+                    <span class="detail-label">Tab ID:</span>
+                    <span class="detail-value">{{ tabState.tab.tabId }}</span>
+                  </div>
+                <div class="detail-row">
+                  <span class="detail-label">Last Seen:</span>
+                  <span class="detail-value">{{ formatLastSeen(tabState.tab.lastSeen) }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Status:</span>
+                  <span class="detail-value">{{ tabState.tab.isActive ? 'Visible' : 'Background' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</main>

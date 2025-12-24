@@ -1,0 +1,66 @@
+<div class="auth-card">
+  <h1>Sign Up</h1>
+  
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        placeholder="your@email.com"
+        [disabled]="loading"
+      />
+      @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+        <div class="field-error">{{ getErrorMessage('email') }}</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="••••••••"
+        [disabled]="loading"
+      />
+      @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
+        <div class="field-error">{{ getErrorMessage('password') }}</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        placeholder="••••••••"
+        [disabled]="loading"
+      />
+      @if (signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched) {
+        <div class="field-error">{{ getErrorMessage('confirmPassword') }}</div>
+      }
+      @if (passwordMismatch) {
+        <div class="field-error">Passwords do not match</div>
+      }
+    </div>
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    @if (success) {
+      <div class="success">{{ success }}</div>
+    }
+
+    <button type="submit" [disabled]="loading || signupForm.invalid">
+      {{ loading ? 'Creating account...' : 'Sign Up' }}
+    </button>
+  </form>
+
+  <div class="auth-footer">
+    Already have an account? <a routerLink="/signin">Sign in</a>
+  </div>
+</div>
